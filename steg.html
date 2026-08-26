@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Steganography Vault - Intruder Alert System</title>
+
+<style>
+:root{
+  --bg1:#050410;
+  --bg2:#0b0822;
+  --bg3:#161233;
+  --accent:#8e2de2;
+  --accent2:#4a00e0;
+  --glass:rgba(255,255,255,.045);
+  --glass-strong:rgba(255,255,255,.075);
+  --glass-border:rgba(255,255,255,.12);
+  --text:#f1f1fb;
+  --muted:#a9a6c9;
+  --success:#3ddc97;
+  --danger:#ff5470;
+  --warning:#ffb407;
+  --info:#7ac7ff;
+  --shadow:0 18px 55px rgba(0,0,0,.42);
+  --radius:22px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;
+  font-family:"Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  background:radial-gradient(circle at 50% 50%,var(--bg3) 0%,var(--bg2) 52%,var(--bg1) 100%);
+  color:var(--text);
+  padding:28px 16px 70px;
+  overflow-x:hidden;
+}
+button,input,textarea{font:inherit}
+
+.sky-glow,.star-field,.star-field-fast{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+}
+.sky-glow{
+  z-index:-3;
+  background:
+    radial-gradient(circle at 25% 18%,rgba(142,45,226,.15) 0%,transparent 45%),
+    radial-gradient(circle at 80% 78%,rgba(74,0,224,.15) 0%,transparent 46%);
+  filter:blur(34px);
+  animation:nebulaPan 25s ease-in-out infinite alternate;
+}
+.star-field{
+  z-index:-2;
+  opacity:.5;
+  background-image:
+    radial-gradient(white,rgba(255,255,255,.25) 1px,transparent 30px),
+    radial-gradient(white,rgba(255,255,255,.17) 1.5px,transparent 40px);
+  background-size:400px 400px;
+  animation:skyScroll 40s linear infinite;
+}
+.star-field-fast{
+  z-index:-1;
+  opacity:.25;
+  background-image:radial-gradient(white,rgba(255,255,255,.15) 2px,transparent 50px);
+  background-size:600px 600px;
+  animation:skyScroll 25s linear infinite;
+}
+@keyframes skyScroll{from{background-position:0 0}to{background-position:0 1000px}}
+@keyframes nebulaPan{
+  0%{transform:scale(1) translate(0,0)}
+  50%{transform:scale(1.15) translate(-30px,20px)}
+  100%{transform:scale(1) translate(30px,-20px)}
+}
+
+.shell{width:min(940px,100%);margin:0 auto;position:relative;z-index:2}
+header{text-align:center;margin:5px 0 24px}
+.logo{
+  font-size:clamp(1.9rem,5.5vw,2.8rem);
+  font-weight:850;
+  background:linear-gradient(90deg,#a770ef,#cf8bf3,#fdb99b);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  letter-spacing:1px;
+}
+.tagline{color:var(--muted);margin-top:6px;font-size:.95rem}
+
+.info-strip{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:18px;
+}
+.info-card{
+  padding:12px 10px;
+  border:1px solid var(--glass-border);
+  background:var(--glass);
+  border-radius:15px;
+  text-align:center;
+  box-shadow:var(--shadow);
+}
+.info-card strong{display:block;font-size:.9rem}
+.info-card span{display:block;color:var(--muted);font-size:.74rem;margin-top:3px}
+
+.tabs{display:flex;gap:10px;justify-content:center;margin-bottom:18px}
+.tab-btn{
+  flex:1;
+  max-width:310px;
+  padding:13px 22px;
+  border-radius:30px;
+  border:1px solid var(--glass-border);
+  background:var(--glass);
+  color:var(--text);
+  cursor:pointer;
+  font-weight:700;
+  transition:.25s;
+  backdrop-filter:blur(10px);
+}
+.tab-btn:hover{transform:translateY(-1px);background:var(--glass-strong)}
+.tab-btn.active{
+  background:linear-gradient(90deg,var(--accent2),var(--accent));
+  box-shadow:0 0 22px rgba(142,45,226,.45);
+  border-color:transparent;
+}
+
+.panel{
+  display:none;
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius);
+  padding:clamp(20px,4vw,30px);
+  backdrop-filter:blur(17px);
+  box-shadow:var(--shadow);
+}
+.panel.active{display:block}
+
+.section-title{font-size:1.15rem;margin-bottom:7px}
+.section-note{font-size:.85rem;line-height:1.55;color:var(--muted);margin-bottom:20px}
+
+.mode-selector{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:20px;
+}
+.mode-card{
+  border:1.5px solid var(--glass-border);
+  background:rgba(0,0,0,.25);
+  border-radius:14px;
+  padding:14px;
+  cursor:pointer;
+  transition:.25s;
+  position:relative;
+}
+.mode-card.selected{
+  border-color:var(--accent);
+  background:rgba(142,45,226,.15);
+  box-shadow:0 0 16px rgba(142,45,226,.3);
+}
+.mode-card input{position:absolute;top:14px;right:14px;accent-color:var(--accent)}
+.mode-title{font-size:.95rem;font-weight:800;margin-bottom:4px}
+.mode-desc{font-size:.76rem;color:var(--muted);line-height:1.4}
+
+.form-group{margin-bottom:18px}
+label{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:8px;
+  font-weight:700;
+  color:#d9d5f7;
+  font-size:.9rem}
+.label-hint{color:var(--muted);font-weight:500;font-size:.76rem}
+
+input[type=password], textarea{
+  width:100%;
+  padding:12px;
+  background:rgba(0,0,0,.27);
+  border:1px solid var(--glass-border);
+  border-radius:11px;
+  color:var(--text);
+  resize:vertical;
+}
+input[type=password]:focus, textarea:focus{
+  outline:2px solid rgba(142,45,226,.45);
+  outline-offset:1px;
+  border-color:var(--accent);
+}
+
+.drop-zone{
+  padding:22px;
+  border:1.5px dashed rgba(169,166,201,.55);
+  border-radius:15px;
+  text-align:center;
+  background:rgba(255,255,255,.025);
+  transition:.25s;
+  cursor:pointer;
+}
+.drop-zone:hover,.drop-zone.dragover{
+  border-color:#bf8aff;
+  background:rgba(142,45,226,.09);
+  transform:translateY(-1px);
+}
+.drop-icon{font-size:1.8rem;margin-bottom:6px}
+.drop-main{font-weight:750;font-size:.92rem}
+.drop-sub{font-size:.78rem;color:var(--muted);margin-top:4px}
+.drop-file{margin-top:8px;font-size:.82rem;color:var(--success);word-break:break-word}
+.hidden-file{display:none!important}
+
+.file-meta{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin-top:10px;
+}
+.meta-chip{
+  background:rgba(0,0,0,.22);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:10px;
+  padding:8px;
+  text-align:center;
+  min-width:0;
+}
+.meta-chip strong{display:block;font-size:.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta-chip span{display:block;color:var(--muted);font-size:.68rem;margin-top:2px}
+
+.preview{
+  display:none;
+  margin-top:14px;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid var(--glass-border);
+  background:rgba(0,0,0,.35);
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+}
+.preview.show{display:flex}
+.preview img{
+  width:100%;
+  max-height:380px;
+  object-fit:contain;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.08);
+}
+.preview video{
+  width:100%;
+  max-height:380px;
+  border-radius:10px;
+  background:#000;
+  outline:none;
+}
+.preview audio{
+  width:100%;
+  margin:8px 0;
+  outline:none;
+}
+.preview-title{
+  align-self:flex-start;
+  font-size:.8rem;
+  font-weight:750;
+  color:var(--info);
+  margin-bottom:2px;
+}
+
+.password-wrap{position:relative}
+.password-actions{
+  position:absolute;
+  right:8px;
+  top:8px;
+  display:flex;
+  gap:4px;
+}
+.tiny-btn{
+  border:1px solid var(--glass-border);
+  background:rgba(255,255,255,.05);
+  color:var(--muted);
+  border-radius:7px;
+  padding:4px 7px;
+  cursor:pointer;
+  font-size:.72rem;
+}
+
+.decoy-panel{
+  border:1px dashed rgba(255,180,7,.35);
+  background:rgba(255,180,7,.03);
+  padding:14px;
+  border-radius:14px;
+  margin-top:15px;
+}
+.decoy-title{
+  color:var(--warning);
+  font-size:.88rem;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-bottom:8px;
+}
+
+.action-btn{
+  width:100%;
+  padding:14px 16px;
+  border-radius:12px;
+  border:none;
+  background:linear-gradient(90deg,var(--success),#28b473);
+  color:#111;
+  font-size:1.02rem;
+  font-weight:850;
+  cursor:pointer;
+  transition:.25s;
+  margin-top:10px;
+}
+.action-btn:hover{box-shadow:0 0 18px rgba(61,220,151,.36);transform:translateY(-2px)}
+.action-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+
+.secondary-btn{
+  width:100%;
+  padding:11px;
+  border-radius:11px;
+  border:1px solid var(--glass-border);
+  background:rgba(255,255,255,.05);
+  color:var(--text);
+  font-weight:700;
+  cursor:pointer;
+  margin-top:8px;
+}
+
+.status-box{
+  margin-top:18px;
+  padding:16px;
+  border-radius:13px;
+  background:rgba(0,0,0,.34);
+  display:none;
+  border:1px solid var(--glass-border);
+}
+.status-box.show{display:block}
+.status-box.success{border-color:rgba(61,220,151,.4)}
+.status-box.error{border-color:rgba(255,84,112,.45)}
+.status-box.warning{border-color:rgba(255,180,7,.4)}
+.status-title{font-weight:800}
+.status-detail{font-size:.8rem;color:var(--muted);line-height:1.5;margin-top:5px;word-break:break-word}
+
+.download-link{
+  display:none;
+  margin-top:13px;
+  padding:10px 14px;
+  border-radius:10px;
+  color:#06120d;
+  background:var(--success);
+  text-decoration:none;
+  font-weight:800;
+}
+.download-link.show{display:inline-block}
+
+.revealed-text-box{
+  margin-top:12px;
+  padding:12px;
+  background:rgba(0,0,0,.5);
+  border:1px solid var(--glass-border);
+  border-radius:10px;
+  font-family:monospace;
+  font-size:.85rem;
+  color:#e4e2ff;
+  max-height:200px;
+  overflow-y:auto;
+  white-space:pre-wrap;
+  display:none;
+}
+.revealed-text-box.show{display:block}
+
+.progress{display:none;margin-top:13px}
+.progress.show{display:block}
+.progress-top{display:flex;justify-content:space-between;font-size:.76rem;color:var(--muted);margin-bottom:5px}
+.progress-bg{height:8px;border-radius:10px;background:rgba(255,255,255,.1);overflow:hidden}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent2),#b865ff,var(--success));transition:width .25s}
+
+.details{
+  margin-top:18px;
+  border:1px solid var(--glass-border);
+  border-radius:13px;
+  overflow:hidden;
+}
+.details summary{cursor:pointer;padding:12px 14px;font-weight:750;background:rgba(255,255,255,.025)}
+.details-body{padding:14px;color:var(--muted);font-size:.78rem;line-height:1.6}
+
+@media(max-width:700px){
+  .info-strip{grid-template-columns:1fr}
+  .mode-selector{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+<div class="sky-glow"></div>
+<div class="star-field"></div>
+<div class="star-field-fast"></div>
+
+<main class="shell">
+  <header>
+    <div class="logo">Steganography Vault</div>
+    <div class="tagline">Dual-Engine Infiltration + Telegram Intruder Alert System</div>
+  </header>
+
+  <section class="info-strip">
+    <div class="info-card"><strong>Pixel LSB Engine</strong><span>Zero file-size change (PNG)</span></div>
+    <div class="info-card"><strong>EOF Container</strong><span>High capacity without bloat</span></div>
+    <div class="info-card"><strong>Telegram Alert</strong><span>Instant mobile notification</span></div>
+  </section>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="hide-tab" onclick="switchTab('hide')">Hide Secrets</button>
+    <button class="tab-btn" id="reveal-tab" onclick="switchTab('reveal')">Reveal Secrets</button>
+  </div>
+
+  <!-- HIDE PANEL -->
+  <section id="hide-panel" class="panel active">
+    <h2 class="section-title">1. Select Embedding Method</h2>
+    <div class="mode-selector">
+      <label class="mode-card selected" id="mode-card-eof" onclick="selectMode('EOF')">
+        <input type="radio" name="hide-mode" id="mode-eof" value="EOF" checked>
+        <div class="mode-title">EOF Mode (End of File)</div>
+        <div class="mode-desc">Appends raw binary bytes. Zero bloat, handles large archives, videos &amp; audios.</div>
+      </label>
+      <label class="mode-card" id="mode-card-lsb" onclick="selectMode('LSB')">
+        <input type="radio" name="hide-mode" id="mode-lsb" value="LSB">
+        <div class="mode-title">LSB Mode (Pixel Engine)</div>
+        <div class="mode-desc">Modifies lowest bits of pixels. File size remains fixed (PNG only).</div>
+      </label>
+    </div>
+
+    <!-- CARRIER -->
+    <div class="form-group">
+      <label><span>Carrier Image</span><span class="label-hint" id="carrier-hint">PNG / JPG / JPEG</span></label>
+      <div class="drop-zone" id="carrier-drop">
+        <div class="drop-icon">🖼️</div>
+        <div class="drop-main">Drop an image here</div>
+        <div class="drop-sub">Click to browse</div>
+        <div class="drop-file" id="carrier-file-name"></div>
+        <input class="hidden-file" type="file" id="carrier-img" accept="image/png,image/jpeg,.png,.jpg,.jpeg">
+      </div>
+      <div class="file-meta" id="carrier-meta" style="display:none">
+        <div class="meta-chip"><strong id="carrier-size">—</strong><span>Carrier Size</span></div>
+        <div class="meta-chip"><strong id="carrier-dim">—</strong><span>Dimensions / Capacity</span></div>
+        <div class="meta-chip"><strong id="carrier-type">—</strong><span>Format</span></div>
+      </div>
+      <div class="preview" id="carrier-preview"></div>
+    </div>
+
+    <!-- SECRET PAYLOAD -->
+    <div id="eof-payload-group" class="form-group">
+      <label><span>Secret File (EOF Mode)</span><span class="label-hint">Video, Audio, Image, PDF, etc.</span></label>
+      <div class="drop-zone" id="secret-drop">
+        <div class="drop-icon">📦</div>
+        <div class="drop-main">Drop payload file here</div>
+        <div class="drop-sub">MP4, MP3, WAV, PNG, JPG, ZIP, PDF, DOC</div>
+        <div class="drop-file" id="secret-file-name"></div>
+        <input class="hidden-file" type="file" id="secret-file">
+      </div>
+      <div class="preview" id="secret-preview"></div>
+    </div>
+
+    <div id="lsb-payload-group" class="form-group" style="display:none">
+      <label><span>True Secret Message (LSB Mode)</span><span class="label-hint">Encrypted into pixels</span></label>
+      <textarea id="lsb-secret-text" rows="3" placeholder="Enter sensitive keys, coordinates, or credentials..."></textarea>
+    </div>
+
+    <!-- MASTER PASSWORD -->
+    <div class="form-group">
+      <label><span>Master Encryption Password</span><span class="label-hint">Unlocks TRUE secret</span></label>
+      <div class="password-wrap">
+        <input type="password" id="hide-pass" placeholder="Enter master password...">
+        <div class="password-actions">
+          <button type="button" class="tiny-btn" onclick="togglePassword('hide-pass',this)">Show</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DYNAMIC DECOY HONEYPOT -->
+    <div class="decoy-panel">
+      <div class="decoy-title">🛡️ Dynamic Decoy Honeypot (No Decoy Password Needed)</div>
+      <div class="section-note" style="margin-bottom:10px">
+        Only specify a harmless message. During extraction, the <b>first wrong password entered</b> will automatically trigger an instant Telegram alert to your phone, bind as the decoy key, and reveal this harmless note.
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label><span>Harmless Decoy Message</span><span class="label-hint">Revealed on first wrong attempt</span></label>
+        <textarea id="hide-decoy-text" rows="2" placeholder="e.g. 'Project brief: Review documentation and update marketing slides.'"></textarea>
+      </div>
+    </div>
+
+    <button class="action-btn" id="hide-btn" onclick="executeHide()">Encrypt &amp; Conceal</button>
+    <button class="secondary-btn" onclick="resetHideForm()">Reset Form</button>
+
+    <div class="progress" id="hide-progress">
+      <div class="progress-top"><span id="hide-progress-text">Processing…</span><span id="hide-progress-value">0%</span></div>
+      <div class="progress-bg"><div class="progress-bar" id="hide-progress-bar"></div></div>
+    </div>
+
+    <div id="hide-status" class="status-box">
+      <div class="status-title" id="hide-msg"></div>
+      <div class="status-detail" id="hide-detail"></div>
+      <a id="hide-download" class="download-link" download>Download Stego Carrier</a>
+    </div>
+  </section>
+
+  <!-- REVEAL PANEL -->
+  <section id="reveal-panel" class="panel">
+    <h2 class="section-title">Extract, Play &amp; Decrypt Secret</h2>
+    <p class="section-note">
+      Upload the stego carrier image and enter your password. Any wrong password attempt will trigger an instant Telegram intruder alert to your mobile device.
+    </p>
+
+    <div class="form-group">
+      <label><span>Stego Image File</span><span class="label-hint">PNG / JPG</span></label>
+      <div class="drop-zone" id="reveal-drop">
+        <div class="drop-icon">🔐</div>
+        <div class="drop-main">Drop stego image here</div>
+        <div class="drop-sub">Auto-detects EOF / LSB / Decoy</div>
+        <div class="drop-file" id="reveal-file-name"></div>
+        <input class="hidden-file" type="file" id="reveal-img" accept="image/png,image/jpeg,.png,.jpg,.jpeg">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label><span>Password</span><span class="label-hint">Master or Bound Decoy Key</span></label>
+      <div class="password-wrap">
+        <input type="password" id="reveal-pass" placeholder="Enter password...">
+        <div class="password-actions">
+          <button type="button" class="tiny-btn" onclick="togglePassword('reveal-pass',this)">Show</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="action-btn" id="reveal-btn" onclick="executeReveal()">Inspect &amp; Reveal</button>
+    <button class="secondary-btn" onclick="resetRevealForm()">Reset Reveal Form</button>
+
+    <div class="progress" id="reveal-progress">
+      <div class="progress-top"><span id="reveal-progress-text">Extracting…</span><span id="reveal-progress-value">0%</span></div>
+      <div class="progress-bg"><div class="progress-bar" id="reveal-progress-bar"></div></div>
+    </div>
+
+    <div id="reveal-status" class="status-box">
+      <div class="status-title" id="reveal-msg"></div>
+      <div class="status-detail" id="reveal-detail"></div>
+      <div id="revealed-text" class="revealed-text-box"></div>
+      <div class="preview" id="reveal-preview"></div>
+      <a id="reveal-download" class="download-link" download>Download Extracted Payload</a>
+    </div>
+  </section>
+
+  <details class="details">
+    <summary>Architecture Details</summary>
+    <div class="details-body">
+      <strong>1. Telegram Intruder Dispatch:</strong> Silently sends an instant push notification with timestamp, carrier filename, and attempted password directly to your Telegram account.<br>
+      <strong>2. In-Page Media Player:</strong> Autodetects MIME type and file extension. Renders native HTML5 <code>&lt;video controls&gt;</code>, <code>&lt;audio controls&gt;</code>, and <code>&lt;img&gt;</code> tags without third-party plugins.<br>
+      <strong>3. EOF Mode:</strong> Appends raw binary payload bytes past the file terminator without canvas re-compression. Output size = Carrier Size + Secret Size + ~30 bytes header.<br>
+      <strong>4. LSB Mode:</strong> Embeds payload bits into RGB color channels via 2D Canvas context without resizing or changing total byte density.
+    </div>
+  </details>
+</main>
+
+<script>
+"use strict";
+
+/* ================= Configured Telegram Bot Credentials ================= */
+const TELEGRAM_BOT_TOKEN = "8974836063:AAF3jVWibQi7gthSEDwbTdSHCvTpwOs_UPE";
+const TELEGRAM_CHAT_ID = "8017267206";
+
+async function sendTelegramAlert(attemptedPassword, fileName) {
+  const timestamp = new Date().toLocaleString();
+  const alertText = encodeURIComponent(
+    `🚨 STEGANOGRAPHY VAULT ALERT 🚨\n\n` +
+    `⚠️ Intruder Attempt Detected!\n` +
+    `📁 File: ${fileName}\n` +
+    `🔑 Attempted Password: ${attemptedPassword}\n` +
+    `🕒 Time: ${timestamp}\n` +
+    `🔒 Decoy Honeypot Activated.`
+  );
+
+  const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${alertText}`;
+
+  try {
+    fetch(url, { mode: "no-cors" });
+    console.log("Telegram intruder alert dispatched successfully.");
+  } catch (err) {
+    console.error("Failed to dispatch alert:", err);
+  }
+}
+
+const MAGIC_EOF = "STEG";
+const MAGIC_LSB = new Uint8Array([0x53, 0x54, 0x45, 0x47, 0x4C, 0x53, 0x42]); // "STEGLSB"
+const INTERNAL_DECOY_SECRET = "DYNAMIC_DECOY_HONEYPOT_SALT_KEY_v2";
+const PBKDF2_ITERATIONS = 200000;
+const TEXT_ENCODER = new TextEncoder();
+const TEXT_DECODER = new TextDecoder();
+
+let currentHideMode = "EOF";
+let currentHideUrl = null;
+let currentRevealUrl = null;
+let loadedCarrierImage = null;
+
+// Stateful First-Wrong-Password Decoy Tracker
+let activeDecoyPassword = null;
+
+const $ = id => document.getElementById(id);
+
+function formatBytes(bytes){
+  if (!Number.isFinite(bytes) || bytes < 0) return "—";
+  if (bytes === 0) return "0 B";
+  const units = ["B","KB","MB","GB"];
+  const i = Math.min(Math.floor(Math.log(bytes)/Math.log(1024)), units.length - 1);
+  return `${(bytes / Math.pow(1024,i)).toFixed(i ? 2 : 0)} ${units[i]}`;
+}
+
+function escapeFileName(name){
+  return String(name || "file").replace(/[\/\\?%*:|"<>]/g,"_").trim().slice(0,180) || "file";
+}
+
+function setStatus(prefix, type, title, detail=""){
+  const box = $(`${prefix}-status`);
+  box.className = `status-box show ${type}`;
+  $(`${prefix}-msg`).textContent = title;
+  $(`${prefix}-detail`).textContent = detail;
+}
+
+function clearStatus(prefix){
+  const box = $(`${prefix}-status`);
+  box.className = "status-box";
+  $(`${prefix}-msg`).textContent = "";
+  $(`${prefix}-detail`).textContent = "";
+  $(`${prefix}-download`).classList.remove("show");
+  if(prefix === "reveal") {
+    $("revealed-text").classList.remove("show");
+    $("revealed-text").textContent = "";
+    $("reveal-preview").classList.remove("show");
+    $("reveal-preview").innerHTML = "";
+  }
+}
+
+function updateProgress(prefix, percent, text){
+  $(`${prefix}-progress`).classList.add("show");
+  const p = Math.max(0, Math.min(100, percent));
+  $(`${prefix}-progress-bar`).style.width = `${p}%`;
+  $(`${prefix}-progress-value`).textContent = `${Math.round(p)}%`;
+  $(`${prefix}-progress-text`).textContent = text;
+}
+
+function hideProgress(prefix){
+  $(`${prefix}-progress`).classList.remove("show");
+}
+
+function switchTab(tab){
+  document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach(panel => panel.classList.remove("active"));
+  if(tab === "hide"){
+    $("hide-tab").classList.add("active");
+    $("hide-panel").classList.add("active");
+  }else{
+    $("reveal-tab").classList.add("active");
+    $("reveal-panel").classList.add("active");
+  }
+}
+
+function selectMode(mode){
+  currentHideMode = mode;
+  $("mode-eof").checked = mode === "EOF";
+  $("mode-lsb").checked = mode === "LSB";
+  $("mode-card-eof").classList.toggle("selected", mode === "EOF");
+  $("mode-card-lsb").classList.toggle("selected", mode === "LSB");
+
+  if(mode === "EOF"){
+    $("eof-payload-group").style.display = "block";
+    $("lsb-payload-group").style.display = "none";
+    $("carrier-hint").textContent = "PNG / JPG / JPEG";
+  }else{
+    $("eof-payload-group").style.display = "none";
+    $("lsb-payload-group").style.display = "block";
+    $("carrier-hint").textContent = "PNG recommended (Lossless)";
+  }
+}
+
+function togglePassword(id, btn){
+  const input = $(id);
+  input.type = input.type === "password" ? "text" : "password";
+  btn.textContent = input.type === "password" ? "Show" : "Hide";
+}
+
+/* ================= Binary Utility Helpers ================= */
+
+function concatBytes(...parts){
+  const total = parts.reduce((sum, p) => sum + p.byteLength, 0);
+  const out = new Uint8Array(total);
+  let offset = 0;
+  for(const p of parts){
+    out.set(new Uint8Array(p), offset);
+    offset += p.byteLength;
+  }
+  return out;
+}
+
+function u32Bytes(value){
+  const out = new Uint8Array(4);
+  new DataView(out.buffer).setUint32(0, value, true);
+  return out;
+}
+
+function readU32(bytes, offset=0){
+  return new DataView(bytes.buffer, bytes.byteOffset + offset, 4).getUint32(0, true);
+}
+
+function buildSecretPackage(name, type, fileBytes){
+  const meta = TEXT_ENCODER.encode(JSON.stringify({ name, type, size: fileBytes.byteLength }));
+  return concatBytes(u32Bytes(meta.byteLength), meta, fileBytes);
+}
+
+function parseSecretPackage(packageBytes){
+  const metaLen = readU32(packageBytes, 0);
+  const metaJson = JSON.parse(TEXT_DECODER.decode(packageBytes.subarray(4, 4 + metaLen)));
+  const secretBytes = packageBytes.subarray(4 + metaLen);
+  return { meta: metaJson, secret: secretBytes };
+}
+
+/* ================= Cryptography Primitives ================= */
+
+async function deriveKey(password, salt, iterations = PBKDF2_ITERATIONS){
+  const baseKey = await crypto.subtle.importKey(
+    "raw",
+    TEXT_ENCODER.encode(password),
+    {name: "PBKDF2"},
+    false,
+    ["deriveKey"]
+  );
+  return crypto.subtle.deriveKey(
+    {name: "PBKDF2", salt, iterations, hash: "SHA-256"},
+    baseKey,
+    {name: "AES-GCM", length: 256},
+    false,
+    ["encrypt", "decrypt"]
+  );
+}
+
+async function encryptData(bytes, password){
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await deriveKey(password, salt);
+  const cipher = await crypto.subtle.encrypt({name: "AES-GCM", iv}, key, bytes);
+
+  const cipherBytes = new Uint8Array(cipher);
+  const result = new Uint8Array(16 + 12 + cipherBytes.byteLength);
+  result.set(salt, 0);
+  result.set(iv, 16);
+  result.set(cipherBytes, 28);
+  return result;
+}
+
+async function decryptData(packageBytes, password){
+  if(packageBytes.byteLength < 28) throw new Error("Encrypted payload truncated.");
+  const salt = packageBytes.subarray(0, 16);
+  const iv = packageBytes.subarray(16, 28);
+  const data = packageBytes.subarray(28);
+
+  const key = await deriveKey(password, salt);
+  return await crypto.subtle.decrypt({name: "AES-GCM", iv}, key, data);
+}
+
+/* ================= LSB Pixel Engine ================= */
+
+function embedLSB(imageData, payloadBytes){
+  const totalBitsNeeded = (MAGIC_LSB.length + 4 + payloadBytes.length) * 8;
+  const availableBits = imageData.data.length * (3 / 4);
+
+  if(totalBitsNeeded > availableBits){
+    throw new Error(`Capacity exceeded. Need ${formatBytes(totalBitsNeeded/8)}, image holds ${formatBytes(availableBits/8)}.`);
+  }
+
+  const stream = concatBytes(MAGIC_LSB, u32Bytes(payloadBytes.length), payloadBytes);
+  const data = imageData.data;
+  let bitIdx = 0;
+
+  for(let i = 0; i < stream.length; i++){
+    const byte = stream[i];
+    for(let bit = 7; bit >= 0; bit--){
+      const bitVal = (byte >> bit) & 1;
+      let pixelByteIdx = Math.floor(bitIdx / 3) * 4 + (bitIdx % 3);
+      data[pixelByteIdx] = (data[pixelByteIdx] & ~1) | bitVal;
+      bitIdx++;
+    }
+  }
+  return imageData;
+}
+
+function extractLSB(imageData){
+  const data = imageData.data;
+  const availableBytes = Math.floor((data.length * 3 / 4) / 8);
+  if(availableBytes < MAGIC_LSB.length + 4) return null;
+
+  function readByte(byteOffset){
+    let byte = 0;
+    for(let bit = 7; bit >= 0; bit--){
+      const totalBitIdx = byteOffset * 8 + (7 - bit);
+      const pixelByteIdx = Math.floor(totalBitIdx / 3) * 4 + (totalBitIdx % 3);
+      const bitVal = data[pixelByteIdx] & 1;
+      byte |= (bitVal << bit);
+    }
+    return byte;
+  }
+
+  for(let i = 0; i < MAGIC_LSB.length; i++){
+    if(readByte(i) !== MAGIC_LSB[i]) return null;
+  }
+
+  let lenBytes = new Uint8Array(4);
+  for(let i = 0; i < 4; i++){
+    lenBytes[i] = readByte(MAGIC_LSB.length + i);
+  }
+  const payloadLen = readU32(lenBytes, 0);
+  if(payloadLen <= 0 || payloadLen > availableBytes - MAGIC_LSB.length - 4){
+    return null;
+  }
+
+  const payload = new Uint8Array(payloadLen);
+  const offset = MAGIC_LSB.length + 4;
+  for(let i = 0; i < payloadLen; i++){
+    payload[i] = readByte(offset + i);
+  }
+  return payload;
+}
+
+/* ================= In-Page Media Player & Previews ================= */
+
+function renderMediaToContainer(container, fileOrBlob, name, mimeType){
+  container.innerHTML = "";
+  if(!fileOrBlob) {
+    container.classList.remove("show");
+    return;
+  }
+
+  const url = (fileOrBlob instanceof Blob || fileOrBlob instanceof File) 
+    ? URL.createObjectURL(fileOrBlob) 
+    : fileOrBlob;
+
+  const type = (mimeType || fileOrBlob.type || "").toLowerCase();
+  const lowerName = (name || fileOrBlob.name || "").toLowerCase();
+
+  const title = document.createElement("div");
+  title.className = "preview-title";
+  title.textContent = `▶ Media Playback / Preview: ${name || fileOrBlob.name || "Payload"}`;
+  container.appendChild(title);
+
+  if(type.startsWith("image/") || /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(lowerName)){
+    const img = document.createElement("img");
+    img.src = url;
+    img.alt = name || "Image payload";
+    container.appendChild(img);
+    container.classList.add("show");
+  } else if(type.startsWith("video/") || /\.(mp4|webm|ogg|mov|mkv)$/i.test(lowerName)){
+    const video = document.createElement("video");
+    video.src = url;
+    video.controls = true;
+    video.autoplay = false;
+    video.preload = "metadata";
+    container.appendChild(video);
+    container.classList.add("show");
+  } else if(type.startsWith("audio/") || /\.(mp3|wav|ogg|m4a|aac|flac)$/i.test(lowerName)){
+    const audio = document.createElement("audio");
+    audio.src = url;
+    audio.controls = true;
+    audio.autoplay = false;
+    container.appendChild(audio);
+    container.classList.add("show");
+  } else {
+    container.classList.remove("show");
+    container.innerHTML = "";
+  }
+}
+
+/* ================= Carrier & File Handlers ================= */
+
+function setupDropZone(zoneId, inputId, onFile){
+  const zone = $(zoneId);
+  const input = $(inputId);
+  zone.addEventListener("click", e => { if(e.target !== input) input.click(); });
+  input.addEventListener("change", () => onFile(input.files?.[0]));
+  ["dragenter","dragover"].forEach(evt => {
+    zone.addEventListener(evt, e => { e.preventDefault(); zone.classList.add("dragover"); });
+  });
+  ["dragleave","drop"].forEach(evt => {
+    zone.addEventListener(evt, e => { e.preventDefault(); zone.classList.remove("dragover"); });
+  });
+  zone.addEventListener("drop", e => {
+    const file = e.dataTransfer.files?.[0];
+    if(file){
+      input.files = e.dataTransfer.files;
+      onFile(file);
+    }
+  });
+}
+
+function setCarrierFile(file){
+  if(!file) return;
+  $("carrier-file-name").textContent = `${file.name} • ${formatBytes(file.size)}`;
+  $("carrier-meta").style.display = "grid";
+  $("carrier-size").textContent = formatBytes(file.size);
+  $("carrier-type").textContent = file.type || "image";
+
+  const img = new Image();
+  const url = URL.createObjectURL(file);
+  img.onload = () => {
+    loadedCarrierImage = img;
+    const capacity = Math.floor((img.width * img.height * 3) / 8);
+    $("carrier-dim").textContent = `${img.width}x${img.height} (~${formatBytes(capacity)} LSB)`;
+    const preview = $("carrier-preview");
+    preview.innerHTML = "";
+    preview.appendChild(img);
+    preview.classList.add("show");
+  };
+  img.src = url;
+}
+
+function setSecretFile(file){
+  if(!file) return;
+  $("secret-file-name").textContent = `${file.name} • ${formatBytes(file.size)}`;
+  renderMediaToContainer($("secret-preview"), file, file.name, file.type);
+}
+
+/* ================= Hide Execution ================= */
+
+async function executeHide(){
+  const carrierFile = $("carrier-img").files?.[0];
+  const masterPass = $("hide-pass").value;
+  const decoyText = $("hide-decoy-text").value;
+  const btn = $("hide-btn");
+
+  clearStatus("hide");
+  hideProgress("hide");
+
+  if(!carrierFile){
+    setStatus("hide","error","Missing Carrier","Please select an image first.");
+    return;
+  }
+
+  btn.disabled = true;
+
+  try{
+    updateProgress("hide", 15, "Preparing payload…");
+
+    let primaryBytes, payloadName, payloadType;
+
+    if(currentHideMode === "EOF"){
+      const secretFile = $("secret-file").files?.[0];
+      if(!secretFile){
+        throw new Error("Please select a file to hide in EOF mode.");
+      }
+      payloadName = secretFile.name;
+      payloadType = secretFile.type || "application/octet-stream";
+      primaryBytes = new Uint8Array(await secretFile.arrayBuffer());
+    }else{
+      const rawText = $("lsb-secret-text").value;
+      if(!rawText.trim()){
+        throw new Error("Please enter a text message to embed in LSB mode.");
+      }
+      payloadName = "message.txt";
+      payloadType = "text/plain";
+      primaryBytes = TEXT_ENCODER.encode(rawText);
+    }
+
+    const primaryPackage = buildSecretPackage(payloadName, payloadType, primaryBytes);
+    let finalPayloadBytes;
+
+    if(decoyText.trim()){
+      updateProgress("hide", 35, "Configuring dynamic decoy trap…");
+      if(!masterPass){
+        throw new Error("Master password is required when activating decoy honeypot.");
+      }
+
+      const decoyPackage = buildSecretPackage("notes.txt", "text/plain", TEXT_ENCODER.encode(decoyText));
+      const encA = await encryptData(primaryPackage, masterPass);
+      const encB = await encryptData(decoyPackage, INTERNAL_DECOY_SECRET);
+
+      finalPayloadBytes = concatBytes(
+        new Uint8Array([1]), // Flag 1 = Dynamic Decoy
+        u32Bytes(encA.byteLength),
+        encA,
+        u32Bytes(encB.byteLength),
+        encB
+      );
+    }else if(masterPass){
+      updateProgress("hide", 35, "Encrypting payload with AES-256-GCM…");
+      const encA = await encryptData(primaryPackage, masterPass);
+      finalPayloadBytes = concatBytes(
+        new Uint8Array([0]), // Flag 0 = Standard Encrypted
+        u32Bytes(encA.byteLength),
+        encA
+      );
+    }else{
+      if(currentHideMode === "LSB"){
+        throw new Error("Password is required for LSB pixel mode security.");
+      }
+      finalPayloadBytes = concatBytes(
+        new Uint8Array([2]), // Flag 2 = Plaintext
+        u32Bytes(primaryPackage.byteLength),
+        primaryPackage
+      );
+    }
+
+    let finalBlob;
+
+    if(currentHideMode === "EOF"){
+      updateProgress("hide", 70, "Appending payload directly to image bytes…");
+      const carrierBytes = new Uint8Array(await carrierFile.arrayBuffer());
+
+      const eofBlock = concatBytes(
+        finalPayloadBytes,
+        u32Bytes(finalPayloadBytes.byteLength),
+        TEXT_ENCODER.encode(MAGIC_EOF)
+      );
+
+      finalBlob = new Blob([carrierBytes, eofBlock], { type: carrierFile.type || "image/jpeg" });
+    }else{
+      updateProgress("hide", 70, "Injecting bits into pixel channels…");
+      if(!loadedCarrierImage){
+        throw new Error("Carrier image not ready.");
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = loadedCarrierImage.naturalWidth || loadedCarrierImage.width;
+      canvas.height = loadedCarrierImage.naturalHeight || loadedCarrierImage.height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(loadedCarrierImage, 0, 0);
+
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      embedLSB(imgData, finalPayloadBytes);
+      ctx.putImageData(imgData, 0, 0);
+
+      finalBlob = await new Promise(res => canvas.toBlob(res, "image/png"));
+    }
+
+    updateProgress("hide", 100, "Concealment Complete!");
+
+    currentHideUrl = URL.createObjectURL(finalBlob);
+    const dl = $("hide-download");
+    dl.href = currentHideUrl;
+    dl.download = currentHideMode === "LSB" ? "lsb_secured.png" : `secured_${carrierFile.name}`;
+    dl.classList.add("show");
+
+    setStatus("hide", "success", "Stego Image Created Successfully!",
+      `Output size: ${formatBytes(finalBlob.size)} (Carrier: ${formatBytes(carrierFile.size)} + Secret: ${formatBytes(primaryBytes.byteLength)})`
+    );
+
+  }catch(err){
+    console.error(err);
+    setStatus("hide", "error", "Operation Failed", err.message);
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ================= Reveal Execution with Telegram Alert ================= */
+
+async function executeReveal(){
+  const revealFile = $("reveal-img").files?.[0];
+  const password = $("reveal-pass").value;
+  const btn = $("reveal-btn");
+
+  clearStatus("reveal");
+  hideProgress("reveal");
+
+  if(!revealFile){
+    setStatus("reveal","error","Missing File","Please select an image to inspect.");
+    return;
+  }
+  if(!password){
+    setStatus("reveal","error","Password Required","Enter a password to unlock the carrier.");
+    return;
+  }
+
+  btn.disabled = true;
+
+  try{
+    updateProgress("reveal", 20, "Analyzing file structure…");
+    const buffer = await revealFile.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+
+    let detectedMode = null;
+    let payloadBytes = null;
+
+    // 1. Check EOF signature
+    if(bytes.length >= 8){
+      const tail = TEXT_DECODER.decode(bytes.subarray(bytes.length - 4));
+      if(tail === MAGIC_EOF){
+        detectedMode = "EOF";
+        const payloadLen = readU32(bytes, bytes.length - 8);
+        const payloadStart = bytes.length - 8 - payloadLen;
+        payloadBytes = bytes.subarray(payloadStart, bytes.length - 8);
+      }
+    }
+
+    // 2. Check LSB signature
+    if(!detectedMode){
+      updateProgress("reveal", 40, "Scanning pixel bit-planes (LSB)…");
+      const img = new Image();
+      const imgUrl = URL.createObjectURL(revealFile);
+      await new Promise((res, rej) => {
+        img.onload = res;
+        img.onerror = rej;
+        img.src = imgUrl;
+      });
+
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      payloadBytes = extractLSB(imgData);
+      URL.revokeObjectURL(imgUrl);
+
+      if(payloadBytes) detectedMode = "LSB";
+    }
+
+    if(!detectedMode || !payloadBytes){
+      throw new Error("No hidden STEG payload found in this file.");
+    }
+
+    updateProgress("reveal", 60, `Unpacking ${detectedMode} container…`);
+
+    const flag = payloadBytes[0];
+    const lenA = readU32(payloadBytes, 1);
+    const slotA = payloadBytes.subarray(5, 5 + lenA);
+
+    let targetPackage = null;
+    let isDecoy = false;
+
+    if(flag === 1){
+      // Dynamic First-Wrong Lock Logic
+      let masterSuccess = false;
+      let decryptedBuf = null;
+
+      // 1. Attempt Master Password Unlock
+      try{
+        decryptedBuf = await decryptData(slotA, password);
+        masterSuccess = true;
+      }catch{}
+
+      if(masterSuccess){
+        targetPackage = parseSecretPackage(new Uint8Array(decryptedBuf));
+      }else{
+        // 2. Wrong Password Handling: Dispatch Telegram Alert
+        sendTelegramAlert(password, revealFile.name);
+
+        if(activeDecoyPassword === null){
+          // Case A: First wrong attempt -> Lock this password to the decoy
+          activeDecoyPassword = password;
+          const lenB = readU32(payloadBytes, 5 + lenA);
+          const slotB = payloadBytes.subarray(9 + lenA, 9 + lenA + lenB);
+          decryptedBuf = await decryptData(slotB, INTERNAL_DECOY_SECRET);
+          targetPackage = parseSecretPackage(new Uint8Array(decryptedBuf));
+          isDecoy = true;
+        }else if(activeDecoyPassword === password){
+          // Case B: Matches the previously bound 1st wrong password
+          const lenB = readU32(payloadBytes, 5 + lenA);
+          const slotB = payloadBytes.subarray(9 + lenA, 9 + lenA + lenB);
+          decryptedBuf = await decryptData(slotB, INTERNAL_DECOY_SECRET);
+          targetPackage = parseSecretPackage(new Uint8Array(decryptedBuf));
+          isDecoy = true;
+        }else{
+          // Case C: Any other wrong password is strictly rejected
+          throw new Error("Authentication failed. Invalid password.");
+        }
+      }
+
+    }else if(flag === 0){
+      try{
+        const decryptedBuf = await decryptData(slotA, password);
+        targetPackage = parseSecretPackage(new Uint8Array(decryptedBuf));
+      }catch{
+        sendTelegramAlert(password, revealFile.name);
+        throw new Error("Authentication failed. Invalid password.");
+      }
+    }else if(flag === 2){
+      targetPackage = parseSecretPackage(slotA);
+    }else{
+      throw new Error("Corrupted container format.");
+    }
+
+    updateProgress("reveal", 90, "Reconstructing and preparing media stream…");
+
+    const payloadData = targetPackage.secret;
+    const fileName = escapeFileName(targetPackage.meta.name || "revealed_file");
+    const mimeType = targetPackage.meta.type || "application/octet-stream";
+    const blob = new Blob([payloadData], { type: mimeType });
+
+    currentRevealUrl = URL.createObjectURL(blob);
+    const dl = $("reveal-download");
+    dl.href = currentRevealUrl;
+    dl.download = fileName;
+    dl.classList.add("show");
+
+    // In-page Text Output
+    if(mimeType.startsWith("text/")){
+      $("revealed-text").textContent = TEXT_DECODER.decode(payloadData);
+      $("revealed-text").classList.add("show");
+    }
+
+    // In-page Video / Audio / Image Player
+    renderMediaToContainer($("reveal-preview"), blob, fileName, mimeType);
+
+    updateProgress("reveal", 100, "Done!");
+
+    setStatus("reveal", isDecoy ? "warning" : "success",
+      isDecoy ? "⚠️ Decoy Message Revealed (Telegram Alert Sent)" : "✅ Master Payload Decrypted",
+      `${fileName} (${formatBytes(payloadData.length)}) | Source: ${detectedMode} Mode ${isDecoy ? "— (Intruder notification dispatched via Telegram)" : ""}`
+    );
+
+  }catch(err){
+    console.error(err);
+    setStatus("reveal", "error", "Extraction Failed", err.message);
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function resetHideForm(){
+  $("carrier-img").value = "";
+  $("secret-file").value = "";
+  $("lsb-secret-text").value = "";
+  $("hide-pass").value = "";
+  $("hide-decoy-text").value = "";
+  $("carrier-file-name").textContent = "";
+  $("secret-file-name").textContent = "";
+  $("carrier-meta").style.display = "none";
+  $("carrier-preview").classList.remove("show");
+  $("secret-preview").classList.remove("show");
+  clearStatus("hide");
+  hideProgress("hide");
+}
+
+function resetRevealForm(){
+  $("reveal-img").value = "";
+  $("reveal-pass").value = "";
+  $("reveal-file-name").textContent = "";
+  activeDecoyPassword = null;
+  clearStatus("reveal");
+  hideProgress("reveal");
+}
+
+setupDropZone("carrier-drop", "carrier-img", setCarrierFile);
+setupDropZone("secret-drop", "secret-file", setSecretFile);
+setupDropZone("reveal-drop", "reveal-img", file => {
+  if(file) $("reveal-file-name").textContent = `${file.name} • ${formatBytes(file.size)}`;
+});
+</script>
+</body>
+</html>

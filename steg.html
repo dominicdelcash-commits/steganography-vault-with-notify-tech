@@ -169,10 +169,11 @@ label{
   margin-bottom:8px;
   font-weight:700;
   color:#d9d5f7;
-  font-size:.9rem}
+  font-size:.9rem;
+}
 .label-hint{color:var(--muted);font-weight:500;font-size:.76rem}
 
-input[type=password], textarea{
+input[type=password], input[type=text], textarea{
   width:100%;
   padding:12px;
   background:rgba(0,0,0,.27);
@@ -181,7 +182,7 @@ input[type=password], textarea{
   color:var(--text);
   resize:vertical;
 }
-input[type=password]:focus, textarea:focus{
+input[type=password]:focus, input[type=text]:focus, textarea:focus{
   outline:2px solid rgba(142,45,226,.45);
   outline-offset:1px;
   border-color:var(--accent);
@@ -298,6 +299,17 @@ input[type=password]:focus, textarea:focus{
   margin-bottom:8px;
 }
 
+.notice-box{
+  background:rgba(122,199,255,.06);
+  border:1px solid rgba(122,199,255,.2);
+  border-radius:10px;
+  padding:10px 12px;
+  font-size:.78rem;
+  color:#c7e5ff;
+  line-height:1.45;
+  margin-bottom:14px;
+}
+
 .action-btn{
   width:100%;
   padding:14px 16px;
@@ -355,14 +367,15 @@ input[type=password]:focus, textarea:focus{
 
 .revealed-text-box{
   margin-top:12px;
-  padding:12px;
-  background:rgba(0,0,0,.5);
+  padding:14px;
+  background:rgba(0,0,0,.55);
   border:1px solid var(--glass-border);
   border-radius:10px;
-  font-family:monospace;
-  font-size:.85rem;
-  color:#e4e2ff;
-  max-height:200px;
+  font-family:system-ui,-apple-system,sans-serif;
+  font-size:.95rem;
+  line-height:1.5;
+  color:#ffffff;
+  max-height:220px;
   overflow-y:auto;
   white-space:pre-wrap;
   display:none;
@@ -399,18 +412,18 @@ input[type=password]:focus, textarea:focus{
 <main class="shell">
   <header>
     <div class="logo">Steganography Vault</div>
-    <div class="tagline">Dual-Engine Infiltration + Telegram Intruder Alert System</div>
+    <div class="tagline">Dual-Engine Infiltration + Dynamic Decoy Intruder Alert</div>
   </header>
 
   <section class="info-strip">
     <div class="info-card"><strong>Pixel LSB Engine</strong><span>Zero file-size change (PNG)</span></div>
-    <div class="info-card"><strong>EOF Container</strong><span>High capacity without bloat</span></div>
-    <div class="info-card"><strong>Telegram Alert</strong><span>Instant mobile notification</span></div>
+    <div class="info-card"><strong>EOF Container</strong><span>High capacity binary carrier</span></div>
+    <div class="info-card"><strong>Active Canary Alert</strong><span>Instant Intruder Notification</span></div>
   </section>
 
   <div class="tabs">
-    <button class="tab-btn active" id="hide-tab" onclick="switchTab('hide')">Hide Secrets</button>
-    <button class="tab-btn" id="reveal-tab" onclick="switchTab('reveal')">Reveal Secrets</button>
+    <button class="tab-btn active" id="hide-tab" type="button" onclick="switchTab('hide')">Hide Secrets</button>
+    <button class="tab-btn" id="reveal-tab" type="button" onclick="switchTab('reveal')">Reveal Secrets</button>
   </div>
 
   <!-- HIDE PANEL -->
@@ -420,7 +433,7 @@ input[type=password]:focus, textarea:focus{
       <label class="mode-card selected" id="mode-card-eof" onclick="selectMode('EOF')">
         <input type="radio" name="hide-mode" id="mode-eof" value="EOF" checked>
         <div class="mode-title">EOF Mode (End of File)</div>
-        <div class="mode-desc">Appends raw binary bytes. Zero bloat, handles large archives, videos &amp; audios.</div>
+        <div class="mode-desc">Appends raw binary bytes. Handles large archives, videos &amp; audios.</div>
       </label>
       <label class="mode-card" id="mode-card-lsb" onclick="selectMode('LSB')">
         <input type="radio" name="hide-mode" id="mode-lsb" value="LSB">
@@ -478,9 +491,9 @@ input[type=password]:focus, textarea:focus{
 
     <!-- DYNAMIC DECOY HONEYPOT -->
     <div class="decoy-panel">
-      <div class="decoy-title">🛡️ Dynamic Decoy Honeypot (No Decoy Password Needed)</div>
-      <div class="section-note" style="margin-bottom:10px">
-        Only specify a harmless message. During extraction, the <b>first wrong password entered</b> will automatically trigger an instant Telegram alert to your phone, bind as the decoy key, and reveal this harmless note.
+      <div class="decoy-title">🛡️ Dynamic Decoy Honeypot</div>
+      <div class="notice-box">
+        When an attacker enters an incorrect password, only this harmless note will be shown while alerting your Telegram silently.
       </div>
       <div class="form-group" style="margin-bottom:0">
         <label><span>Harmless Decoy Message</span><span class="label-hint">Revealed on first wrong attempt</span></label>
@@ -488,8 +501,8 @@ input[type=password]:focus, textarea:focus{
       </div>
     </div>
 
-    <button class="action-btn" id="hide-btn" onclick="executeHide()">Encrypt &amp; Conceal</button>
-    <button class="secondary-btn" onclick="resetHideForm()">Reset Form</button>
+    <button class="action-btn" id="hide-btn" type="button" onclick="executeHide()">Encrypt &amp; Conceal</button>
+    <button class="secondary-btn" type="button" onclick="resetHideForm()">Reset Form</button>
 
     <div class="progress" id="hide-progress">
       <div class="progress-top"><span id="hide-progress-text">Processing…</span><span id="hide-progress-value">0%</span></div>
@@ -507,7 +520,7 @@ input[type=password]:focus, textarea:focus{
   <section id="reveal-panel" class="panel">
     <h2 class="section-title">Extract, Play &amp; Decrypt Secret</h2>
     <p class="section-note">
-      Upload the stego carrier image and enter your password. Any wrong password attempt will trigger an instant Telegram intruder alert to your mobile device.
+      Upload the stego carrier image and enter your password.
     </p>
 
     <div class="form-group">
@@ -531,8 +544,8 @@ input[type=password]:focus, textarea:focus{
       </div>
     </div>
 
-    <button class="action-btn" id="reveal-btn" onclick="executeReveal()">Inspect &amp; Reveal</button>
-    <button class="secondary-btn" onclick="resetRevealForm()">Reset Reveal Form</button>
+    <button class="action-btn" id="reveal-btn" type="button" onclick="executeReveal()">Inspect &amp; Reveal</button>
+    <button class="secondary-btn" type="button" onclick="resetRevealForm()">Reset Reveal Form</button>
 
     <div class="progress" id="reveal-progress">
       <div class="progress-top"><span id="reveal-progress-text">Extracting…</span><span id="reveal-progress-value">0%</span></div>
@@ -549,12 +562,12 @@ input[type=password]:focus, textarea:focus{
   </section>
 
   <details class="details">
-    <summary>Architecture Details</summary>
+    <summary>Architecture &amp; Operational Details</summary>
     <div class="details-body">
-      <strong>1. Telegram Intruder Dispatch:</strong> Silently sends an instant push notification with timestamp, carrier filename, and attempted password directly to your Telegram account.<br>
-      <strong>2. In-Page Media Player:</strong> Autodetects MIME type and file extension. Renders native HTML5 <code>&lt;video controls&gt;</code>, <code>&lt;audio controls&gt;</code>, and <code>&lt;img&gt;</code> tags without third-party plugins.<br>
-      <strong>3. EOF Mode:</strong> Appends raw binary payload bytes past the file terminator without canvas re-compression. Output size = Carrier Size + Secret Size + ~30 bytes header.<br>
-      <strong>4. LSB Mode:</strong> Embeds payload bits into RGB color channels via 2D Canvas context without resizing or changing total byte density.
+      <strong>1. Telegram Intruder Dispatch:</strong> Silently sends an instant push notification with timestamp and carrier filename directly to your Telegram bot without logging plaintext passwords.<br>
+      <strong>2. In-Page Media Player:</strong> Autodetects MIME type and file extension. Renders native HTML5 <code>&lt;video controls&gt;</code>, <code>&lt;audio controls&gt;</code>, and <code>&lt;img&gt;</code> tags without plugins.<br>
+      <strong>3. EOF Mode:</strong> Appends raw binary payload bytes past the file terminator without canvas re-compression.<br>
+      <strong>4. LSB Mode:</strong> Embeds payload bits into RGB color channels via 2D Canvas context without changing total byte density.
     </div>
   </details>
 </main>
@@ -562,35 +575,14 @@ input[type=password]:focus, textarea:focus{
 <script>
 "use strict";
 
-/* ================= Configured Telegram Bot Credentials ================= */
+const BACKEND_API_BASE = "http://localhost:5000";
 const TELEGRAM_BOT_TOKEN = "8974836063:AAF3jVWibQi7gthSEDwbTdSHCvTpwOs_UPE";
 const TELEGRAM_CHAT_ID = "8017267206";
 
-async function sendTelegramAlert(attemptedPassword, fileName) {
-  const timestamp = new Date().toLocaleString();
-  const alertText = encodeURIComponent(
-    `🚨 STEGANOGRAPHY VAULT ALERT 🚨\n\n` +
-    `⚠️ Intruder Attempt Detected!\n` +
-    `📁 File: ${fileName}\n` +
-    `🔑 Attempted Password: ${attemptedPassword}\n` +
-    `🕒 Time: ${timestamp}\n` +
-    `🔒 Decoy Honeypot Activated.`
-  );
-
-  const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${alertText}`;
-
-  try {
-    fetch(url, { mode: "no-cors" });
-    console.log("Telegram intruder alert dispatched successfully.");
-  } catch (err) {
-    console.error("Failed to dispatch alert:", err);
-  }
-}
-
 const MAGIC_EOF = "STEG";
-const MAGIC_LSB = new Uint8Array([0x53, 0x54, 0x45, 0x47, 0x4C, 0x53, 0x42]); // "STEGLSB"
+const MAGIC_LSB = new Uint8Array([0x53, 0x54, 0x45, 0x47, 0x4C, 0x53, 0x42]);
 const INTERNAL_DECOY_SECRET = "DYNAMIC_DECOY_HONEYPOT_SALT_KEY_v2";
-const PBKDF2_ITERATIONS = 200000;
+const PBKDF2_ITERATIONS = 100000;
 const TEXT_ENCODER = new TextEncoder();
 const TEXT_DECODER = new TextDecoder();
 
@@ -598,11 +590,19 @@ let currentHideMode = "EOF";
 let currentHideUrl = null;
 let currentRevealUrl = null;
 let loadedCarrierImage = null;
-
-// Stateful First-Wrong-Password Decoy Tracker
 let activeDecoyPassword = null;
 
-const $ = id => document.getElementById(id);
+function $(id){ return document.getElementById(id); }
+
+function generateRandomHex(bytesCount = 16) {
+  const arr = new Uint8Array(bytesCount);
+  if (window.crypto && crypto.getRandomValues) {
+    crypto.getRandomValues(arr);
+  } else {
+    for (let i = 0; i < bytesCount; i++) arr[i] = Math.floor(Math.random() * 256);
+  }
+  return Array.from(arr).map(b => b.toString(16).padStart(2, "0")).join("");
+}
 
 function formatBytes(bytes){
   if (!Number.isFinite(bytes) || bytes < 0) return "—";
@@ -685,6 +685,40 @@ function togglePassword(id, btn){
   btn.textContent = input.type === "password" ? "Show" : "Hide";
 }
 
+/* ================= Alert Dispatch ================= */
+
+async function dispatchAlert(fileName, canaryId){
+  const timestamp = new Date().toLocaleString();
+  
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1200);
+    const res = await fetch(`${BACKEND_API_BASE}/api/alert/wrong-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fileName: fileName || "stego_file", canaryId: canaryId || null }),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    if(res.ok) return;
+  } catch(e) {}
+
+  if(TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID){
+    const alertMsg = encodeURIComponent(
+      `🚨 STEGANOGRAPHY VAULT ALERT 🚨\n\n` +
+      `⚠️ Intruder Attempt Detected!\n` +
+      `📁 File: ${fileName || "Stego Carrier"}\n` +
+      `🏷️ Canary ID: ${canaryId || "Dynamic Decoy"}\n` +
+      `🕒 Time: ${timestamp}\n` +
+      `🔒 Decoy Honeypot Triggered.`
+    );
+    const directUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${alertMsg}`;
+    try {
+      fetch(directUrl, { mode: "no-cors" });
+    } catch(err) {}
+  }
+}
+
 /* ================= Binary Utility Helpers ================= */
 
 function concatBytes(...parts){
@@ -708,8 +742,9 @@ function readU32(bytes, offset=0){
   return new DataView(bytes.buffer, bytes.byteOffset + offset, 4).getUint32(0, true);
 }
 
-function buildSecretPackage(name, type, fileBytes){
-  const meta = TEXT_ENCODER.encode(JSON.stringify({ name, type, size: fileBytes.byteLength }));
+function buildSecretPackage(name, type, fileBytes, extraMeta={}){
+  const metaObj = Object.assign({ name, type, size: fileBytes.byteLength }, extraMeta);
+  const meta = TEXT_ENCODER.encode(JSON.stringify(metaObj));
   return concatBytes(u32Bytes(meta.byteLength), meta, fileBytes);
 }
 
@@ -826,7 +861,7 @@ function extractLSB(imageData){
   return payload;
 }
 
-/* ================= In-Page Media Player & Previews ================= */
+/* ================= Media Handling ================= */
 
 function renderMediaToContainer(container, fileOrBlob, name, mimeType){
   container.innerHTML = "";
@@ -835,8 +870,8 @@ function renderMediaToContainer(container, fileOrBlob, name, mimeType){
     return;
   }
 
-  const url = (fileOrBlob instanceof Blob || fileOrBlob instanceof File) 
-    ? URL.createObjectURL(fileOrBlob) 
+  const url = (fileOrBlob instanceof Blob || fileOrBlob instanceof File)
+    ? URL.createObjectURL(fileOrBlob)
     : fileOrBlob;
 
   const type = (mimeType || fileOrBlob.type || "").toLowerCase();
@@ -874,11 +909,13 @@ function renderMediaToContainer(container, fileOrBlob, name, mimeType){
   }
 }
 
-/* ================= Carrier & File Handlers ================= */
+/* ================= Carrier & File Setup ================= */
 
 function setupDropZone(zoneId, inputId, onFile){
   const zone = $(zoneId);
   const input = $(inputId);
+  if(!zone || !input) return;
+
   zone.addEventListener("click", e => { if(e.target !== input) input.click(); });
   input.addEventListener("change", () => onFile(input.files?.[0]));
   ["dragenter","dragover"].forEach(evt => {
@@ -923,7 +960,7 @@ function setSecretFile(file){
   renderMediaToContainer($("secret-preview"), file, file.name, file.type);
 }
 
-/* ================= Hide Execution ================= */
+/* ================= Execution Functions ================= */
 
 async function executeHide(){
   const carrierFile = $("carrier-img").files?.[0];
@@ -959,7 +996,7 @@ async function executeHide(){
       if(!rawText.trim()){
         throw new Error("Please enter a text message to embed in LSB mode.");
       }
-      payloadName = "message.txt";
+      payloadName = "secret_message.txt";
       payloadType = "text/plain";
       primaryBytes = TEXT_ENCODER.encode(rawText);
     }
@@ -968,17 +1005,25 @@ async function executeHide(){
     let finalPayloadBytes;
 
     if(decoyText.trim()){
-      updateProgress("hide", 35, "Configuring dynamic decoy trap…");
+      updateProgress("hide", 30, "Binding dynamic decoy trap…");
       if(!masterPass){
         throw new Error("Master password is required when activating decoy honeypot.");
       }
 
-      const decoyPackage = buildSecretPackage("notes.txt", "text/plain", TEXT_ENCODER.encode(decoyText));
+      const canaryId = generateRandomHex(16);
+
+      const decoyPackage = buildSecretPackage(
+        "notes.txt",
+        "text/plain",
+        TEXT_ENCODER.encode(decoyText.trim()),
+        { canaryId }
+      );
+
       const encA = await encryptData(primaryPackage, masterPass);
       const encB = await encryptData(decoyPackage, INTERNAL_DECOY_SECRET);
 
       finalPayloadBytes = concatBytes(
-        new Uint8Array([1]), // Flag 1 = Dynamic Decoy
+        new Uint8Array([1]),
         u32Bytes(encA.byteLength),
         encA,
         u32Bytes(encB.byteLength),
@@ -988,7 +1033,7 @@ async function executeHide(){
       updateProgress("hide", 35, "Encrypting payload with AES-256-GCM…");
       const encA = await encryptData(primaryPackage, masterPass);
       finalPayloadBytes = concatBytes(
-        new Uint8Array([0]), // Flag 0 = Standard Encrypted
+        new Uint8Array([0]),
         u32Bytes(encA.byteLength),
         encA
       );
@@ -997,7 +1042,7 @@ async function executeHide(){
         throw new Error("Password is required for LSB pixel mode security.");
       }
       finalPayloadBytes = concatBytes(
-        new Uint8Array([2]), // Flag 2 = Plaintext
+        new Uint8Array([2]),
         u32Bytes(primaryPackage.byteLength),
         primaryPackage
       );
@@ -1044,7 +1089,7 @@ async function executeHide(){
     dl.classList.add("show");
 
     setStatus("hide", "success", "Stego Image Created Successfully!",
-      `Output size: ${formatBytes(finalBlob.size)} (Carrier: ${formatBytes(carrierFile.size)} + Secret: ${formatBytes(primaryBytes.byteLength)})`
+      `Output size: ${formatBytes(finalBlob.size)} (Carrier: ${formatBytes(carrierFile.size)} + Payload: ${formatBytes(primaryBytes.byteLength)})`
     );
 
   }catch(err){
@@ -1054,8 +1099,6 @@ async function executeHide(){
     btn.disabled = false;
   }
 }
-
-/* ================= Reveal Execution with Telegram Alert ================= */
 
 async function executeReveal(){
   const revealFile = $("reveal-img").files?.[0];
@@ -1084,7 +1127,6 @@ async function executeReveal(){
     let detectedMode = null;
     let payloadBytes = null;
 
-    // 1. Check EOF signature
     if(bytes.length >= 8){
       const tail = TEXT_DECODER.decode(bytes.subarray(bytes.length - 4));
       if(tail === MAGIC_EOF){
@@ -1095,7 +1137,6 @@ async function executeReveal(){
       }
     }
 
-    // 2. Check LSB signature
     if(!detectedMode){
       updateProgress("reveal", 40, "Scanning pixel bit-planes (LSB)…");
       const img = new Image();
@@ -1130,14 +1171,12 @@ async function executeReveal(){
     const slotA = payloadBytes.subarray(5, 5 + lenA);
 
     let targetPackage = null;
-    let isDecoy = false;
 
     if(flag === 1){
-      // Dynamic First-Wrong Lock Logic
       let masterSuccess = false;
       let decryptedBuf = null;
 
-      // 1. Attempt Master Password Unlock
+      // 1. Try master password
       try{
         decryptedBuf = await decryptData(slotA, password);
         masterSuccess = true;
@@ -1146,26 +1185,17 @@ async function executeReveal(){
       if(masterSuccess){
         targetPackage = parseSecretPackage(new Uint8Array(decryptedBuf));
       }else{
-        // 2. Wrong Password Handling: Dispatch Telegram Alert
-        sendTelegramAlert(password, revealFile.name);
-
-        if(activeDecoyPassword === null){
-          // Case A: First wrong attempt -> Lock this password to the decoy
+        // 2. Wrong password -> Unlock decoy and trigger Telegram alert
+        if(activeDecoyPassword === null || activeDecoyPassword === password){
           activeDecoyPassword = password;
           const lenB = readU32(payloadBytes, 5 + lenA);
           const slotB = payloadBytes.subarray(9 + lenA, 9 + lenA + lenB);
           decryptedBuf = await decryptData(slotB, INTERNAL_DECOY_SECRET);
           targetPackage = parseSecretPackage(new Uint8Array(decryptedBuf));
-          isDecoy = true;
-        }else if(activeDecoyPassword === password){
-          // Case B: Matches the previously bound 1st wrong password
-          const lenB = readU32(payloadBytes, 5 + lenA);
-          const slotB = payloadBytes.subarray(9 + lenA, 9 + lenA + lenB);
-          decryptedBuf = await decryptData(slotB, INTERNAL_DECOY_SECRET);
-          targetPackage = parseSecretPackage(new Uint8Array(decryptedBuf));
-          isDecoy = true;
+
+          dispatchAlert(revealFile.name, targetPackage.meta.canaryId);
         }else{
-          // Case C: Any other wrong password is strictly rejected
+          dispatchAlert(revealFile.name, null);
           throw new Error("Authentication failed. Invalid password.");
         }
       }
@@ -1175,7 +1205,7 @@ async function executeReveal(){
         const decryptedBuf = await decryptData(slotA, password);
         targetPackage = parseSecretPackage(new Uint8Array(decryptedBuf));
       }catch{
-        sendTelegramAlert(password, revealFile.name);
+        dispatchAlert(revealFile.name, null);
         throw new Error("Authentication failed. Invalid password.");
       }
     }else if(flag === 2){
@@ -1184,7 +1214,7 @@ async function executeReveal(){
       throw new Error("Corrupted container format.");
     }
 
-    updateProgress("reveal", 90, "Reconstructing and preparing media stream…");
+    updateProgress("reveal", 90, "Preparing media output…");
 
     const payloadData = targetPackage.secret;
     const fileName = escapeFileName(targetPackage.meta.name || "revealed_file");
@@ -1197,20 +1227,18 @@ async function executeReveal(){
     dl.download = fileName;
     dl.classList.add("show");
 
-    // In-page Text Output
     if(mimeType.startsWith("text/")){
       $("revealed-text").textContent = TEXT_DECODER.decode(payloadData);
       $("revealed-text").classList.add("show");
     }
 
-    // In-page Video / Audio / Image Player
     renderMediaToContainer($("reveal-preview"), blob, fileName, mimeType);
 
     updateProgress("reveal", 100, "Done!");
 
-    setStatus("reveal", isDecoy ? "warning" : "success",
-      isDecoy ? "⚠️ Decoy Message Revealed (Telegram Alert Sent)" : "✅ Master Payload Decrypted",
-      `${fileName} (${formatBytes(payloadData.length)}) | Source: ${detectedMode} Mode ${isDecoy ? "— (Intruder notification dispatched via Telegram)" : ""}`
+    setStatus("reveal", "success",
+      "Secret Unlocked Successfully",
+      `${fileName} (${formatBytes(payloadData.length)}) | Decrypted via ${detectedMode} Mode`
     );
 
   }catch(err){
@@ -1245,10 +1273,12 @@ function resetRevealForm(){
   hideProgress("reveal");
 }
 
-setupDropZone("carrier-drop", "carrier-img", setCarrierFile);
-setupDropZone("secret-drop", "secret-file", setSecretFile);
-setupDropZone("reveal-drop", "reveal-img", file => {
-  if(file) $("reveal-file-name").textContent = `${file.name} • ${formatBytes(file.size)}`;
+window.addEventListener("DOMContentLoaded", () => {
+  setupDropZone("carrier-drop", "carrier-img", setCarrierFile);
+  setupDropZone("secret-drop", "secret-file", setSecretFile);
+  setupDropZone("reveal-drop", "reveal-img", file => {
+    if(file) $("reveal-file-name").textContent = `${file.name} • ${formatBytes(file.size)}`;
+  });
 });
 </script>
 </body>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+i<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -378,7 +378,6 @@ input:focus, textarea:focus {
     <button class="tab-btn" id="reveal-tab" onclick="switchTab('reveal')">Reveal Secrets</button>
   </div>
 
-  <!-- HIDE PANEL -->
   <section id="hide-panel" class="panel active">
     <h2 class="section-title">1. Select Embedding Architecture</h2>
     <div class="mode-selector">
@@ -394,7 +393,6 @@ input:focus, textarea:focus {
       </label>
     </div>
 
-    <!-- CARRIER -->
     <div class="form-group">
       <label><span>Carrier Image</span><span class="label-hint" id="carrier-hint">PNG / JPG / JPEG</span></label>
       <div class="drop-zone" id="carrier-drop">
@@ -412,7 +410,6 @@ input:focus, textarea:focus {
       <div class="preview" id="carrier-preview"></div>
     </div>
 
-    <!-- MASTER SECRET PAYLOAD -->
     <div id="eof-payload-group" class="form-group">
       <label><span>Master Secret Payload (File)</span><span class="label-hint">Video, Audio, Document, Image, ZIP</span></label>
       <div class="drop-zone" id="secret-drop">
@@ -430,7 +427,6 @@ input:focus, textarea:focus {
       <textarea id="lsb-secret-text" rows="3" placeholder="Enter sensitive credentials, keys, or messages..."></textarea>
     </div>
 
-    <!-- MASTER PASSWORD -->
     <div class="form-group">
       <label><span>Master Password</span><span class="label-hint">Unlocks TRUE secret</span></label>
       <div class="password-wrap">
@@ -441,7 +437,6 @@ input:focus, textarea:focus {
       </div>
     </div>
 
-    <!-- DYNAMIC FIRST-WRONG HONEYPOT -->
     <div class="decoy-panel">
       <div class="decoy-title">🛡️ Dynamic Decoy Honeypot (No Decoy Password Needed)</div>
       <div class="section-note" style="margin-bottom:10px">
@@ -468,7 +463,6 @@ input:focus, textarea:focus {
     </div>
   </section>
 
-  <!-- REVEAL PANEL -->
   <section id="reveal-panel" class="panel">
     <h2 class="section-title">Decrypt &amp; Inspect Secret</h2>
     <p class="section-note">
@@ -497,7 +491,7 @@ input:focus, textarea:focus {
     </div>
 
     <div class="form-group">
-      <label><span>Alert Push Topic</span><span class="label-hint">Subscribed in ntfy app</span></label>
+      <label><span>Alert Push Topic</span><span class="label-hint">Subscribed in  app</span></label>
       <input type="text" id="reveal-topic" value="stego-vault-alerts-8f92a4" placeholder="Enter ntfy topic name...">
     </div>
 
@@ -814,7 +808,7 @@ async function dispatchAlert(topic, fileName, passLength) {
       method: "POST",
       body: alertText
     });
-    console.log("ntfy alert delivered successfully to:", targetTopic);
+    console.log("y alert delivered successfully to:", targetTopic);
   } catch (err) {
     console.warn("Alert notification failed:", err);
   }
@@ -973,7 +967,7 @@ async function executeHide() {
       containerBytes = concatBytes(
         new Uint8Array([0x03]),
         u32Bytes(encMaster.byteLength),
-        encMaster,
+        encMaster, 
         u32Bytes(encDecoy.byteLength),
         encDecoy
       );
@@ -1228,6 +1222,8 @@ function resetRevealForm() {
   clearStatus("reveal");
   hideProgress("reveal");
 }
+
+/* ================= Initialization ================= */
 
 setupDropZone("carrier-drop", "carrier-img", setCarrierFile);
 setupDropZone("secret-drop", "secret-file", setSecretFile);
